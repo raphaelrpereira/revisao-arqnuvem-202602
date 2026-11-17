@@ -67,7 +67,6 @@
         .progress { margin-bottom: 20px; font-weight: bold; color: #666; }
         .report-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid #eee; }
         ul { line-height: 1.6; }
-        #loading-screen { text-align: center; padding: 40px; }
         @media print {
             body { background-color: white; }
             .container { box-shadow: none; padding: 0; }
@@ -102,12 +101,6 @@
         <div id="options-container"></div>
     </div>
 
-    <!-- TELA DE CARREGAMENTO -->
-    <div id="loading-screen" class="hidden">
-        <h2>Processando suas respostas e enviando para o professor...</h2>
-        <p>Aguarde um instante.</p>
-    </div>
-
     <!-- TELA DE RESULTADOS -->
     <div id="result-screen" class="hidden">
         <h1>Relatório Final do Aluno</h1>
@@ -128,416 +121,500 @@
 </div>
 
 <script>
-    // ARRAY SEM O GABARITO (answer)
     const questions = [
+        // --- API GATEWAY (10 Questões) ---
         {
+            topic: "API Gateway",
             context: "Uma loja virtual adotou uma arquitetura moderna dividida em dezenas de microsserviços. Para que o aplicativo móvel não precise conhecer o endereço de cada serviço, a equipe de TI implementou um componente central.",
-            question: "Nesse cenário, o que caracteriza fundamentalmente o papel do API Gateway?",
+            question: "Nesse cenário, o que caracteriza fundamentalmente o papel do API Gateway?[cite: 2]",
             options: [
                 "Um banco de dados relacional focado em armazenar os logs de acesso.",
-                "Uma ponte que atua como ponto central de comunicação entre as requisições dos clientes e os serviços backend.",
+                "Uma ponte que atua como ponto central de comunicação entre as requisições dos clientes e os serviços backend.[cite: 2]",
                 "Um firewall de rede que atua exclusivamente na camada física dos servidores.",
                 "Um serviço de armazenamento de arquivos em bloco para imagens dos produtos."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "API Gateway",
             context: "Durante o período de Black Friday, o e-commerce recebe milhares de tentativas de acesso simultâneas, algumas delas identificadas como possíveis ataques de negação de serviço (DDoS).",
-            question: "Qual funcionalidade do API Gateway ajuda a mitigar esse problema limitando requisições por período de tempo?",
+            question: "Qual funcionalidade do API Gateway ajuda a mitigar esse problema limitando requisições por período de tempo?[cite: 7]",
             options: [
                 "Cache de respostas.",
-                "Limitação de Taxa (Rate Limiting).",
+                "Limitação de Taxa (Rate Limiting).[cite: 7]",
                 "Transformação de protocolos.",
                 "Balanceamento de Carga estático."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "API Gateway",
             context: "O aplicativo de uma clínica exibe uma lista de médicos que raramente sofre alterações. Contudo, os usuários abrem essa tela milhares de vezes por dia, gerando carga desnecessária no banco de dados.",
-            question: "Qual recurso do API Gateway evita acionar o serviço repetidas vezes ao armazenar respostas anteriores?",
+            question: "Qual recurso do API Gateway evita acionar o serviço repetidas vezes ao armazenar respostas anteriores?[cite: 7]",
             options: [
-                "Cache.",
+                "Cache.[cite: 7]",
                 "Circuit Breaker.",
                 "Agregação.",
                 "Service Discovery."
-            ]
+            ],
+            answer: 0
         },
         {
+            topic: "API Gateway",
             context: "Para exibir a tela de perfil do usuário, o frontend precisa buscar dados pessoais no Serviço A, histórico de compras no Serviço B e pontuação de fidelidade no Serviço C.",
-            question: "O API Gateway pode realizar essas três chamadas, tratar as respostas e enviá-las consolidadas ao cliente através de qual função?",
+            question: "O API Gateway pode realizar essas três chamadas, tratar as respostas e enviá-las consolidadas ao cliente através de qual função?[cite: 9]",
             options: [
                 "Balanceamento de Carga.",
                 "Autenticação IAM.",
-                "Agregação.",
+                "Agregação.[cite: 9]",
                 "Transformação XML para JSON."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "API Gateway",
             context: "Um dos microsserviços do sistema começou a apresentar lentidão extrema e falhas de conexão, ameaçando travar outras partes da aplicação que dependem dele.",
-            question: "Qual função do API Gateway garante que a falha desse serviço não pare o restante do sistema, acionando outra instância caso necessário?",
+            question: "Qual função do API Gateway garante que a falha desse serviço não pare o restante do sistema, acionando outra instância caso necessário?[cite: 10]",
             options: [
-                "Circuit Breaker.",
+                "Circuit Breaker.[cite: 10]",
                 "Versionamento.",
                 "Monitoramento do CloudWatch.",
                 "Validação de corpo de requisição."
-            ]
+            ],
+            answer: 0
         },
         {
+            topic: "API Gateway",
             context: "Um sistema bancário antigo retorna os saldos no formato XML. A nova interface web, no entanto, só consegue ler dados no formato moderno JSON.",
-            question: "O API Gateway resolve esse problema alterando o formato da mensagem através da função de:",
+            question: "O API Gateway resolve esse problema alterando o formato da mensagem através da função de:[cite: 9]",
             options: [
                 "Autenticação e Autorização.",
-                "Transformação.",
+                "Transformação.[cite: 9]",
                 "Tratamento de Erros.",
                 "Service Discovery."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "API Gateway",
             context: "A equipe de segurança exigiu que nenhuma requisição chegasse aos servidores internos sem antes ter a identidade do usuário confirmada e validada.",
-            question: "No API Gateway, essa verificação central de identidade ocorre por meio da integração de qual função?",
+            question: "No API Gateway, essa verificação central de identidade ocorre por meio da integração de qual função?[cite: 8]",
             options: [
                 "Monitoramento de latência.",
-                "Autenticação e Autorização (IAM).",
+                "Autenticação e Autorização (IAM).[cite: 8]",
                 "WAF (Web Application Firewall).",
                 "Geração de Documentação automática."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "API Gateway",
             context: "Apesar de trazer inúmeros benefícios para a arquitetura de microsserviços, a adoção do API Gateway exige cuidados gerenciais e de infraestrutura.",
-            question: "Qual das alternativas representa uma desvantagem ou ponto de atenção na utilização de um API Gateway?",
+            question: "Qual das alternativas representa uma desvantagem ou ponto de atenção na utilização de um API Gateway?[cite: 13]",
             options: [
-                "Criação de um ponto único de falha, pois se o Gateway parar, todo o software para.",
+                "Criação de um ponto único de falha, pois se o Gateway parar, todo o software para.[cite: 13]",
                 "Incapacidade de gerar documentação automatizada das APIs.",
                 "Redução drástica da escalabilidade dos serviços subjacentes.",
                 "Falta de suporte nativo para funções FaaS como AWS Lambda."
-            ]
+            ],
+            answer: 0
         },
         {
+            topic: "API Gateway",
             context: "Um desenvolvedor está criando um formulário de contato web que não possui um servidor backend tradicional, utilizando a arquitetura Serverless da Amazon.",
-            question: "Ao criar o método POST no AWS API Gateway, qual tipo de integração deve ser selecionado para executar o código do backend?",
+            question: "Ao criar o método POST no AWS API Gateway, qual tipo de integração deve ser selecionado para executar o código do backend?[cite: 18]",
             options: [
                 "Integração com Amazon EC2.",
-                "Integração com Função Lambda.",
+                "Integração com Função Lambda.[cite: 18]",
                 "Integração Mock (Simulação).",
                 "Integração de VPC Local."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "API Gateway",
             context: "Ao implantar um novo contêiner na nuvem, o endereço IP do serviço pode mudar dinamicamente. O API Gateway precisa saber exatamente onde esse serviço está rodando.",
-            question: "Qual funcionalidade permite que o API Gateway consulte registros em tempo real para descobrir onde um determinado serviço subiu?",
+            question: "Qual funcionalidade permite que o API Gateway consulte registros em tempo real para descobrir onde um determinado serviço subiu?[cite: 10]",
             options: [
                 "Versionamento semântico.",
                 "Tratamento de Erros padronizado.",
-                "Service Discovery.",
+                "Service Discovery.[cite: 10]",
                 "WAF (Web Application Firewall)."
-            ]
+            ],
+            answer: 2
         },
+
+        // --- DYNAMODB (10 Questões) ---
         {
+            topic: "DynamoDB",
             context: "Uma startup de jogos precisa armazenar o progresso de milhões de jogadores em tempo real, exigindo alta performance, mas a estrutura dos dados varia muito entre os jogos.",
-            question: "Para este cenário, o Amazon DynamoDB se apresenta como uma solução adequada por ser um banco de dados de qual tipo?",
+            question: "Para este cenário, o Amazon DynamoDB se apresenta como uma solução adequada por ser um banco de dados de qual tipo?[cite: 26, 27]",
             options: [
                 "Relacional, com esquemas rígidos de validação.",
-                "NoSQL, rápido e flexível, do modelo Chave-Valor.",
+                "NoSQL, rápido e flexível, do modelo Chave-Valor.[cite: 26, 27]",
                 "Armazenamento de Arquivos em Bloco (Block Storage).",
                 "Data Warehouse focado em relatórios OLAP lentos."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "DynamoDB",
             context: "Na tabela 'Aluno', o registro de João possui os campos 'Nome' e 'Telefone'. O registro de Maria, na mesma tabela, possui 'Nome', 'Idade' e 'Endereço'.",
-            question: "O DynamoDB permite essa divergência de atributos estruturais entre itens da mesma tabela devido à sua característica:",
+            question: "O DynamoDB permite essa divergência de atributos estruturais entre itens da mesma tabela devido à sua característica:[cite: 30]",
             options: [
                 "Auto Escalável.",
                 "Serverless.",
-                "Schemaless.",
+                "Schemaless.[cite: 30]",
                 "Multiregional."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "DynamoDB",
             context: "Um aplicativo de entrega tem picos de acesso apenas nos horários de almoço e jantar. A empresa não quer pagar por servidores ociosos durante a madrugada.",
-            question: "Sobre o modelo financeiro do DynamoDB, por que ele é vantajoso neste caso?",
+            question: "Sobre o modelo financeiro do DynamoDB, por que ele é vantajoso neste caso?[cite: 26, 27]",
             options: [
                 "Pois cobra uma taxa fixa mensal independentemente do número de acessos.",
-                "Pois opera no modo de capacidade sob demanda, onde se paga somente quando usa.",
+                "Pois opera no modo de capacidade sob demanda, onde se paga somente quando usa.[cite: 26, 27]",
                 "Pois as requisições de leitura noturnas são armazenadas em cache gratuitamente.",
                 "Pois exige compra de licenças de software adiantadas por ano."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "DynamoDB",
             context: "Ao modelar a tabela de notas dos alunos no DynamoDB, o professor configurou a matrícula como o atributo fundamental que ditará em qual servidor físico o dado ficará salvo.",
-            question: "A matrícula, neste contexto de distribuição mandatória de dados, atua como qual elemento?",
+            question: "A matrícula, neste contexto de distribuição mandatória de dados, atua como qual elemento?[cite: 31, 32]",
             options: [
                 "Global Secondary Index (GSI).",
-                "Partition Key (PK).",
+                "Partition Key (PK).[cite: 31, 32]",
                 "Sort Key (SK).",
                 "Foreign Key (FK)."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "DynamoDB",
             context: "Na mesma tabela de notas, além da matrícula para agrupar os dados, o professor precisa ordernar as avaliações pela data de lançamento e código da disciplina.",
-            question: "Qual chave, de caráter opcional para a tabela, permite essa ordenação e busca avançada de itens dentro de uma mesma partição?",
+            question: "Qual chave, de caráter opcional para a tabela, permite essa ordenação e busca avançada de itens dentro de uma mesma partição?[cite: 31, 32]",
             options: [
-                "Sort Key (SK).",
+                "Sort Key (SK).[cite: 31, 32]",
                 "Partition Key (PK).",
                 "Identity Access Key.",
                 "Time To Live (TTL) Key."
-            ]
+            ],
+            answer: 0
         },
         {
+            topic: "DynamoDB",
             context: "A estrutura de uma tabela foi feita para buscar notas por Aluno. Porém, agora a coordenação solicitou uma funcionalidade para buscar todos os alunos por Professor, algo não previsto na chave primária.",
-            question: "O que deve ser utilizado no DynamoDB para permitir novos padrões de acesso sem alterar a Partition Key original?",
+            question: "O que deve ser utilizado no DynamoDB para permitir novos padrões de acesso sem alterar a Partition Key original?[cite: 38]",
             options: [
                 "Criar um banco de dados relacional paralelo.",
                 "Mudar o banco para o Amazon S3.",
-                "Criar um Global Secondary Index (GSI).",
+                "Criar um Global Secondary Index (GSI).[cite: 38]",
                 "Desativar a característica Schemaless da tabela."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "DynamoDB",
             context: "Um arquiteto de software está desenhando um sistema de relatórios financeiros que exige JOINs complexos entre dezenas de entidades fortemente relacionadas.",
-            question: "O uso do DynamoDB é aconselhável nesse cenário?",
+            question: "O uso do DynamoDB é aconselhável nesse cenário?[cite: 28, 29]",
             options: [
                 "Sim, pois ele foi desenhado especificamente para substituir bancos SQL em queries complexas.",
-                "Não, pois a modelagem do DynamoDB deve ser bem pensada para padrões chave-valor, sendo mais recomendável para microsserviços definidos com baixo acoplamento.",
+                "Não, pois a modelagem do DynamoDB deve ser bem pensada para padrões chave-valor, sendo mais recomendável para microsserviços definidos com baixo acoplamento.[cite: 28, 29]",
                 "Sim, contanto que seja utilizado o modo de capacidade provisionada.",
                 "Não, pois o DynamoDB não suporta armazenamento de números e datas."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "DynamoDB",
             context: "A equipe de TI não possui administradores de banco de dados (DBAs) disponíveis para atualizar o sistema operacional ou gerenciar o espaço em disco do servidor de banco.",
-            question: "Nesse caso, qual característica do DynamoDB garante que a equipe fique livre dessas tarefas de manutenção?",
+            question: "Nesse caso, qual característica do DynamoDB garante que a equipe fique livre dessas tarefas de manutenção?[cite: 27]",
             options: [
                 "É um serviço puramente Open Source.",
-                "Possui um modelo Serverless, sem servidores para gerenciar.",
+                "Possui um modelo Serverless, sem servidores para gerenciar.[cite: 27]",
                 "Funciona apenas em redes locais (on-premises).",
                 "Permite o acesso via SSH para que os desenvolvedores atualizem os patches."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "DynamoDB",
             context: "Para extrair o relatório, a query precisa encontrar o Aluno '224-010203' e todas as disciplinas cursadas por ele, cujo código começa com a palavra 'NOTA#'.",
-            question: "Qual comando de filtro exemplifica corretamente essa busca utilizando chaves no DynamoDB?",
+            question: "Qual comando de filtro exemplifica corretamente essa busca utilizando chaves no DynamoDB?[cite: 36]",
             options: [
                 "SELECT * FROM notas WHERE matricula = '224-010203' JOIN disciplinas.",
-                "pk = '224-010203' AND BEGINS_WITH(sk, 'NOTA#')",
+                "pk = '224-010203' AND BEGINS_WITH(sk, 'NOTA#')[cite: 36]",
                 "GSI1 = '224-010203' AND LIMIT 10",
                 "pk = 'NOTA#' OR sk = '224-010203'"
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "DynamoDB",
             context: "O sistema web do banco central precisa responder a checagens de fraude instantâneas, exigindo um tempo de resposta extremamente veloz para evitar lentidão nas transações.",
-            question: "No que diz respeito ao desempenho em escala, qual a latência entregue pelo Amazon DynamoDB?",
+            question: "No que diz respeito ao desempenho em escala, qual a latência entregue pelo Amazon DynamoDB?[cite: 27]",
             options: [
                 "Latência medida em minutos dependendo da carga.",
-                "Latência de um dígito em milissegundos.",
+                "Latência de um dígito em milissegundos.[cite: 27]",
                 "Latência variável entre 2 e 5 segundos.",
                 "Latência zero absoluta por operar fora da internet."
-            ]
+            ],
+            answer: 1
         },
+
+        // --- IAM (10 Questões) ---
         {
+            topic: "IAM",
             context: "Um funcionário tenta entrar no sistema de folha de pagamento da empresa e o software exige que ele insira seu login, senha e um código enviado ao celular.",
-            question: "Esse processo de confirmar a identidade do usuário responde a pergunta 'Quem você é?' e é tecnicamente chamado de:",
+            question: "Esse processo de confirmar a identidade do usuário responde a pergunta 'Quem você é?' e é tecnicamente chamado de:[cite: 43, 45]",
             options: [
                 "Autorização.",
-                "Autenticação.",
+                "Autenticação.[cite: 43, 45]",
                 "Roteamento.",
                 "Escalonamento."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "IAM",
             context: "Após acessar o portal com sucesso, o estagiário tenta clicar no botão 'Excluir Banco de Dados', mas o sistema bloqueia a ação informando que seu perfil não permite essa operação.",
-            question: "O controle sobre o que o usuário pode fazer após estar logado (O que você pode fazer?) refere-se ao conceito de:",
+            question: "O controle sobre o que o usuário pode fazer após estar logado (O que você pode fazer?) refere-se ao conceito de:[cite: 44, 45]",
             options: [
-                "Autorização.",
+                "Autorização.[cite: 44, 45]",
                 "Autenticação.",
                 "Balanceamento de Carga.",
                 "Versionamento Semântico."
-            ]
+            ],
+            answer: 0
         },
         {
+            topic: "IAM",
             context: "A desenvolvedora Maria Santos e o sistema de backup automatizado da empresa precisam acessar recursos internos da AWS com credenciais de longo prazo.",
-            question: "Na estrutura do IAM, a Maria e o sistema de backup devem ser criados e representados como:",
+            question: "Na estrutura do IAM, a Maria e o sistema de backup devem ser criados e representados como:[cite: 48, 59]",
             options: [
                 "IAM Roles.",
                 "IAM Policies.",
-                "IAM Users.",
+                "IAM Users.[cite: 48, 59]",
                 "IAM Groups."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "IAM",
             context: "O departamento de Recursos Humanos contratou 20 novos analistas. Todos eles precisarão do mesmo nível exato de acesso a determinadas pastas no S3 e bancos de dados.",
-            question: "Para organizar esses usuários e aplicar as permissões de forma centralizada e herdada, o administrador deve utilizar:",
+            question: "Para organizar esses usuários e aplicar as permissões de forma centralizada e herdada, o administrador deve utilizar:[cite: 50, 51]",
             options: [
                 "IAM Users individuais com políticas distintas.",
-                "IAM Groups.",
+                "IAM Groups.[cite: 50, 51]",
                 "Políticas Resource-based no EC2.",
                 "Variáveis de ambiente locais."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "IAM",
             context: "Uma instância de servidor EC2 precisa fazer upload de imagens para um bucket S3. Não é seguro salvar chaves de acesso fixas no código-fonte rodando nesse servidor.",
-            question: "Para delegar acesso seguro, permitindo que a instância assuma credenciais temporárias para interagir com o S3, o que deve ser utilizado?",
+            question: "Para delegar acesso seguro, permitindo que a instância assuma credenciais temporárias para interagir com o S3, o que deve ser utilizado?[cite: 53, 54, 59]",
             options: [
-                "IAM Role.",
+                "IAM Role.[cite: 53, 54, 59]",
                 "IAM Group.",
                 "IAM User.",
                 "Access Key Root."
-            ]
+            ],
+            answer: 0
         },
         {
+            topic: "IAM",
             context: "O administrador de segurança precisa criar um documento oficial, em formato JSON, declarando explicitamente que o estagiário só tem permissão para ler arquivos (Action: s3:GetObject).",
-            question: "Esse documento de regras utilizado no IAM é conhecido como:",
+            question: "Esse documento de regras utilizado no IAM é conhecido como:[cite: 55, 59]",
             options: [
                 "Role Trust Relationship.",
                 "IAM Group.",
-                "IAM Policy.",
+                "IAM Policy.[cite: 55, 59]",
                 "Identity Federated Token."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "IAM",
             context: "O usuário João está em um grupo que permite deletar servidores (Effect: Allow). No entanto, há uma política de segurança global da empresa que bloqueia a exclusão de servidores em produção (Effect: Deny).",
-            question: "Se o João tentar excluir o servidor em produção, o que acontecerá segundo as regras de avaliação de políticas da AWS?",
+            question: "Se o João tentar excluir o servidor em produção, o que acontecerá segundo as regras de avaliação de políticas da AWS?[cite: 57, 60]",
             options: [
                 "A ação será permitida, pois o Allow do grupo sempre vence o Deny.",
-                "A ação será negada imediatamente, pois um Deny explícito sempre sobrescreve um Allow.",
+                "A ação será negada imediatamente, pois um Deny explícito sempre sobrescreve um Allow.[cite: 57, 60]",
                 "A requisição ficará travada esperando aprovação do usuário root.",
                 "O acesso será concedido apenas por 15 minutos."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "IAM",
             context: "Para evitar dores de cabeça com bloqueios, um desenvolvedor novato decidiu liberar acesso administrativo total para sua aplicação ler dados básicos do cliente.",
-            question: "Qual regra fundamental e princípio de segurança o desenvolvedor desrespeitou flagrantemente?",
+            question: "Qual regra fundamental e princípio de segurança o desenvolvedor desrespeitou flagrantemente?[cite: 60]",
             options: [
                 "Princípio da Redundância Total.",
-                "Princípio da Menor Permissão, que orienta conceder apenas permissões mínimas necessárias.",
+                "Princípio da Menor Permissão, que orienta conceder apenas permissões mínimas necessárias.[cite: 60]",
                 "Princípio do Explicit Allow Caching.",
                 "Princípio do Lock-in de segurança."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "IAM",
             context: "Uma nova conta de usuário IAM foi criada hoje mesmo para um novo funcionário da empresa. Nenhuma permissão ou política foi atrelada a esse usuário ainda.",
-            question: "Por padrão, o que este novo usuário IAM recém-criado pode acessar ou fazer na AWS?",
+            question: "Por padrão, o que este novo usuário IAM recém-criado pode acessar ou fazer na AWS?[cite: 49]",
             options: [
                 "Pode ler qualquer recurso, mas não alterar.",
                 "Possui privilégios de administrador por 24 horas para configuração inicial.",
-                "Não tem permissão para fazer absolutamente nada na AWS.",
+                "Não tem permissão para fazer absolutamente nada na AWS.[cite: 49]",
                 "Pode gerenciar apenas os serviços Serverless."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "IAM",
             context: "No documento JSON de uma Policy, o desenvolvedor usou o parâmetro: `\"Action\": [\"s3:GetObject\"]` e atrelou ao ARN do bucket.",
-            question: "Na estrutura básica de uma policy, a seção 'Action' tem como propósito especificar o que exatamente?",
+            question: "Na estrutura básica de uma policy, a seção 'Action' tem como propósito especificar o que exatamente?[cite: 57]",
             options: [
                 "As condições de IP e horário de acesso ao recurso.",
-                "A lista de ações de serviço específicas permitidas ou negadas na regra.",
+                "A lista de ações de serviço específicas permitidas ou negadas na regra.[cite: 57]",
                 "Qual versão da linguagem da política está sendo utilizada.",
                 "O identificador único (ID) do usuário que executará a regra."
-            ]
+            ],
+            answer: 1
         },
+
+        // --- SERVERLESS (10 Questões) ---
         {
+            topic: "Serverless",
             context: "A diretoria de TI quer acelerar o tempo de lançamento de novos produtos, exigindo que os programadores foquem 100% no código, sem perder dias configurando Linux e máquinas virtuais.",
-            question: "Qual modelo de computação em nuvem atende diretamente a essa necessidade, eliminando o contato da equipe com a infraestrutura?",
+            question: "Qual modelo de computação em nuvem atende diretamente a essa necessidade, eliminando o contato da equipe com a infraestrutura?[cite: 63, 64]",
             options: [
                 "IaaS (Infraestrutura como Serviço).",
                 "Bare Metal on-premises.",
-                "Serverless (Computação sem Servidor).",
+                "Serverless (Computação sem Servidor).[cite: 63, 64]",
                 "Virtualização de Hardware local."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "Serverless",
             context: "Um site de ingressos hospedado em arquitetura Serverless enfrentou um pico inesperado na abertura de vendas de um show famoso, passando de 100 para 5.000 usuários por segundo.",
-            question: "Como os recursos computacionais se comportam frente a essa demanda variável no modelo Serverless?",
+            question: "Como os recursos computacionais se comportam frente a essa demanda variável no modelo Serverless?[cite: 64, 66]",
             options: [
-                "O escalonamento automático ajusta recursos baseado na demanda sem intervenção manual.",
+                "O escalonamento automático ajusta recursos baseado na demanda sem intervenção manual.[cite: 64, 66]",
                 "O site trava imediatamente pois a capacidade é alocada e fixa no ato da contratação.",
                 "A equipe precisa acessar o painel e adicionar mais memória RAM em cada servidor virtual.",
                 "O provedor corta o acesso para evitar custos adicionais não planejados."
-            ]
+            ],
+            answer: 0
         },
         {
+            topic: "Serverless",
             context: "Os testes demonstraram que a API Serverless é muito rápida na maior parte do tempo. Porém, a primeira requisição do dia (após horas sem uso) sofre um atraso perceptível de quase 2 segundos.",
-            question: "Esse fenômeno de latência maior na primeira execução após um período de inatividade é conhecido como:",
+            question: "Esse fenômeno de latência maior na primeira execução após um período de inatividade é conhecido como:[cite: 67]",
             options: [
                 "Vendor Lock-in.",
                 "DDoS Attack.",
                 "Circuit Breaking.",
-                "Cold Start."
-            ]
+                "Cold Start.[cite: 67]"
+            ],
+            answer: 3
         },
         {
+            topic: "Serverless",
             context: "O setor de inteligência artificial construiu um modelo de machine learning pesado que demora cerca de 45 minutos para processar os dados de cada execução.",
-            question: "Por que a AWS Lambda (Serverless) não é adequada para esse tipo de processamento em lote extenso?",
+            question: "Por que a AWS Lambda (Serverless) não é adequada para esse tipo de processamento em lote extenso?[cite: 63, 67]",
             options: [
-                "Porque o tempo de execução é limitado, suportando no máximo 15 minutos por execução.",
+                "Porque o tempo de execução é limitado, suportando no máximo 15 minutos por execução.[cite: 63, 67]",
                 "Porque Serverless cobra o desenvolvedor mesmo enquanto ocioso.",
                 "Porque a AWS Lambda só aceita códigos escritos em linguagem PHP.",
                 "Porque a AWS Lambda não possui acesso à internet."
-            ]
+            ],
+            answer: 0
         },
         {
+            topic: "Serverless",
             context: "O gerente de TI reluta em mover tudo para funções AWS Lambda, temendo que todo o código da empresa fique tão atrelado aos serviços da Amazon que seria impossível migrar para o Google ou Microsoft depois.",
-            question: "A dependência excessiva e dificuldade de migração entre provedores de nuvem é um risco do Serverless conhecido como:",
+            question: "A dependência excessiva e dificuldade de migração entre provedores de nuvem é um risco do Serverless conhecido como:[cite: 67]",
             options: [
                 "Cold Start.",
                 "Free Tier Constraint.",
-                "Vendor Lock-in.",
+                "Vendor Lock-in.[cite: 67]",
                 "Implicit Deny."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "Serverless",
             context: "Sempre que um usuário faz upload de uma foto de perfil para o sistema, ela precisa ser cortada em formato miniatura (thumbnail) e salva automaticamente.",
-            question: "Esse cenário de resposta a eventos de upload de imagens é considerado ideal para a adoção de Serverless?",
+            question: "Esse cenário de resposta a eventos de upload de imagens é considerado ideal para a adoção de Serverless?[cite: 68]",
             options: [
                 "Não, pois Serverless não consegue interagir com arquivos de mídia.",
                 "Não, pois requer servidores potentes sempre ligados para edição de imagem.",
-                "Sim, o processamento de arquivos acionado por eventos é um caso de uso ideal.",
+                "Sim, o processamento de arquivos acionado por eventos é um caso de uso ideal.[cite: 68]",
                 "Sim, desde que a execução dure mais de 30 minutos."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "Serverless",
             context: "A startup tem um orçamento apertado. Eles construíram um sistema interno que só é acessado pelos gestores três vezes por semana.",
-            question: "Qual vantagem financeira do Serverless justifica a escolha desta arquitetura para sistemas esporádicos?",
+            question: "Qual vantagem financeira do Serverless justifica a escolha desta arquitetura para sistemas esporádicos?[cite: 66]",
             options: [
                 "O valor da mensalidade é um custo fixo baixo e padronizado.",
-                "Você paga somente quando a função é executada, sem custos com servidor ocioso.",
+                "Você paga somente quando a função é executada, sem custos com servidor ocioso.[cite: 66]",
                 "Você ganha acesso ilimitado por usar provedores locais gratuitos.",
                 "Não há cobranças se você programar em Python ou Java."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "Serverless",
             context: "Para colocar sua primeira função Serverless na internet sem se preocupar com infraestrutura, o desenvolvedor utilizou o serviço FaaS (Function as a Service) principal da AWS.",
-            question: "Qual é o nome comercial desse serviço na Amazon Web Services?",
+            question: "Qual é o nome comercial desse serviço na Amazon Web Services?[cite: 65, 71]",
             options: [
                 "Amazon EC2.",
                 "Azure Functions.",
-                "AWS Lambda.",
+                "AWS Lambda.[cite: 65, 71]",
                 "Cloud Functions."
-            ]
+            ],
+            answer: 2
         },
         {
+            topic: "Serverless",
             context: "O sistema operacional subjacente ao ambiente Serverless precisou de uma correção de segurança crítica durante a madrugada.",
-            question: "No modelo Serverless, de quem é a responsabilidade por instalar essas atualizações e patches no sistema operacional?",
+            question: "No modelo Serverless, de quem é a responsabilidade por instalar essas atualizações e patches no sistema operacional?[cite: 64, 66]",
             options: [
                 "Do desenvolvedor, via acesso remoto SSH.",
-                "Do provedor de nuvem, pois a infraestrutura é totalmente gerenciada por eles.",
+                "Do provedor de nuvem, pois a infraestrutura é totalmente gerenciada por eles.[cite: 64, 66]",
                 "Da equipe de cibersegurança interna da empresa.",
                 "Do administrador do banco de dados (DBA)."
-            ]
+            ],
+            answer: 1
         },
         {
+            topic: "Serverless",
             context: "A equipe notou um erro lógico em um fluxo que envolve o API Gateway e três funções Lambda distintas se comunicando. O desenvolvedor tentou testar a falha em sua máquina local.",
-            question: "Sobre o processo de manutenção nesse ambiente, qual afirmação representa um desafio na adoção de Serverless?",
+            question: "Sobre o processo de manutenção nesse ambiente, qual afirmação representa um desafio na adoção de Serverless?[cite: 67]",
             options: [
                 "As linguagens de programação perdem a compatibilidade ao subir para a nuvem.",
                 "É impossível realizar deploy de código fora do horário comercial.",
-                "O debugging é complexo, pois o ambiente local é diferente da produção e testes distribuídos são mais desafiadores.",
+                "O debugging é complexo, pois o ambiente local é diferente da produção e testes distribuídos são mais desafiadores.[cite: 67]",
                 "O custo do ambiente Serverless de testes excede o custo de produção imediatamente."
-            ]
+            ],
+            answer: 2
         }
     ];
 
     let currentQuestionIndex = 0;
-    let userAnswers = [];
+    let score = 0;
+    let wrongTopics = new Set();
     
-    // ATENÇÃO: COLE A URL DO SEU APPS SCRIPT ABAIXO
-    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycby_cW9x79XjN0F7PndptyRXAymPcVhy3yDPj9UZqbpZ5TEw2kB5Vb1U-sZPwM8pJnO_/exec";
-
     function startQuiz() {
         const name = document.getElementById('student-name').value.trim();
         const email = document.getElementById('student-email').value.trim();
@@ -548,7 +625,7 @@
             return;
         }
 
-        if (!email.endsWith('@imepac.edu.br') && !email.endsWith('@aluno.imepac.edu.br')) {
+        if (!email.endsWith('@imepac.edu.br')) {
             emailError.classList.remove('hidden');
             return;
         } else {
@@ -583,49 +660,37 @@
     }
 
     function submitAnswer(selectedIndex) {
-        userAnswers.push(selectedIndex);
+        const q = questions[currentQuestionIndex];
+        if (selectedIndex === q.answer) {
+            score++;
+        } else {
+            wrongTopics.add(q.topic);
+        }
 
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
             loadQuestion();
         } else {
-            finishQuiz();
+            showResults();
         }
     }
 
-    function finishQuiz() {
+    function showResults() {
         document.getElementById('quiz-screen').classList.add('hidden');
-        document.getElementById('loading-screen').classList.remove('hidden');
-
-        const nomeAluno = document.getElementById('student-name').value.trim();
-        const emailAluno = document.getElementById('student-email').value.trim();
+        document.getElementById('result-screen').classList.remove('hidden');
         
-        // Monta a URL de chamada GET
-        const fetchUrl = `${URL_APPS_SCRIPT}?nome=${encodeURIComponent(nomeAluno)}&email=${encodeURIComponent(emailAluno)}&respostas=${userAnswers.join(',')}`;
-
-        fetch(fetchUrl)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('loading-screen').classList.add('hidden');
-                document.getElementById('result-screen').classList.remove('hidden');
-                
-                document.getElementById('res-score').innerText = data.score;
-                
-                const improvementList = document.getElementById('improvement-list');
-                if (data.melhorar.length === 0) {
-                    improvementList.innerHTML = "<li>Excelente! Você não apresentou erros e dominou todos os tópicos avaliados.</li>";
-                } else {
-                    data.melhorar.forEach(topic => {
-                        const li = document.createElement('li');
-                        li.innerText = topic;
-                        improvementList.appendChild(li);
-                    });
-                }
-            })
-            .catch(error => {
-                alert("Ocorreu um erro ao enviar os dados. A sua nota será processada manualmente pela equipe.");
-                console.error(error);
+        document.getElementById('res-score').innerText = score;
+        
+        const improvementList = document.getElementById('improvement-list');
+        if (wrongTopics.size === 0) {
+            improvementList.innerHTML = "<li>Excelente! Você não apresentou erros e dominou todos os tópicos avaliados.</li>";
+        } else {
+            wrongTopics.forEach(topic => {
+                const li = document.createElement('li');
+                li.innerText = topic;
+                improvementList.appendChild(li);
             });
+        }
     }
 </script>
 </body>
